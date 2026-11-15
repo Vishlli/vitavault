@@ -30,3 +30,27 @@ Java 25, Spring Boot 4.1, Spring Security (JWT resource server), Spring Data JPA
 Flyway creates the schema on first start.
 
 ## API examples
+POST /api/v1/auth/register {“email”:”a@test.com”,”password”:”Password123",”role”:”USER”}
+POST /api/v1/auth/login {“email”:”a@test.com”,”password”:”Password123"}
+GET /api/v1/services
+POST /api/v1/payments header: Idempotency-Key: <unique key> {“serviceId”:1}
+GET /api/v1/payments/{id} (payment plus its ledger entries)
+POST /api/v1/payments/{id}/refunds
+
+
+## Tests
+
+`PaymentConcurrencyTest` sends 10 simultaneous payment requests with the same idempotency key. It asserts that exactly one transaction is created, the other nine return the same transaction, the ledger has two entries, and the wallet is debited once. It runs against PostgreSQL in CI on every push.
+
+## Known limitations
+
+- Payments are simulated; there is no real payment provider
+- Refunds are full-amount only
+- Data-sharing consent and revocation are not implemented yet
+- No frontend or deployment yet
+- Single currency (INR)
+'@
+[System.IO.File]::WriteAllText("$PWD\README.md", $md, (New-Object System.Text.UTF8Encoding($false)))
+git add .
+git commit -m "Add README"
+git push
